@@ -33,13 +33,6 @@ namespace TwitchChatVotingProxy
             m_VotingReceivers = votingReceivers;
             m_Config = config;
 
-            m_Logger.Information("ChaosModController configured with the following options:");
-            m_Logger.Information($"  VotingMode: {m_Config.VotingMode}");
-            m_Logger.Information($"  OverlayMode: {m_Config.OverlayMode}");
-            m_Logger.Information($"  RetainInitialVotes: {m_Config.RetainInitialVotes}");
-            m_Logger.Information($"  PermittedUsernames: {(m_Config.PermittedUsernames is not null && m_Config.PermittedUsernames.Length > 0 ? string.Join(", ", m_Config.PermittedUsernames) : "None")}");
-            m_Logger.Information($"  VoteablePrefix: '{m_Config.VoteablePrefix}'");
-
             // Setup pipe listeners
             m_ChaosPipe.OnGetCurrentVotes += OnGetCurrentVotes;
             m_ChaosPipe.OnGetVoteResult += OnGetVoteResult;
@@ -244,11 +237,8 @@ namespace TwitchChatVotingProxy
         /// </summary>
         private void OnVoteReceiverMessage(object? sender, OnMessageArgs e)
         {
-            m_Logger.Debug($"Received vote message from '{e.Username}': '{e.Message}'");
-
             if (!m_VoteRunning || e.ClientId is null || e.Message is null)
             {
-                m_Logger.Debug("Ignoring vote message: Voting is not running or ClientId/Message is null.");
                 return;
             }
 
@@ -268,7 +258,6 @@ namespace TwitchChatVotingProxy
 
                 if (!found)
                 {
-                    m_Logger.Debug($"Ignoring vote from '{e.Username}' as they are not in the permitted users list.");
                     return;
                 }
             }
@@ -279,14 +268,12 @@ namespace TwitchChatVotingProxy
 
                 if (voteOption.Matches.Contains(e.Message))
                 {
-                    m_Logger.Debug($"Message '{e.Message}' matches option {i + 1} ('{voteOption.Label}').");
                     // Check if the player has already voted
                     if (!m_UserVotedFor.TryGetValue(e.ClientId, out int previousVote))
                     {
                         // If they haven't voted, count his vote
                         m_UserVotedFor.Add(e.ClientId, i);
                         voteOption.Votes++;
-                        m_Logger.Information($"Counted first-time vote for option {i + 1} from '{e.Username}'.");
                     }
                     else if (previousVote != i)
                     {
@@ -298,11 +285,6 @@ namespace TwitchChatVotingProxy
 
                         m_UserVotedFor.Add(e.ClientId, i);
                         voteOption.Votes++;
-                        m_Logger.Information($"'{e.Username}' changed vote from option {previousVote + 1} to {i + 1}.");
-                    }
-                    else
-                    {
-                        m_Logger.Debug($"'{e.Username}' voted for the same option ({i + 1}) again. Ignoring.");
                     }
 
                     // We found a matching option, so we can stop looking.
