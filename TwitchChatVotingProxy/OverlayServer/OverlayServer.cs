@@ -131,4 +131,3 @@ namespace TwitchChatVotingProxy.OverlayServer
         }
     }
 }
-
