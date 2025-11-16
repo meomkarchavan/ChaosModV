@@ -166,8 +166,8 @@ namespace ConfigApp
             meta_effects_short_timed_dur.Text = $"{OptionsManager.ConfigFile.ReadValue("MetaShortEffectDur", 65)}";
 
             // Integrations
-            integrations_streamer_bot_enable.IsChecked = OptionsManager.VotingFile.ReadValue("EnableVotingStreamerBot", false);
-            integrations_streamer_bot_port.Text = $"{OptionsManager.VotingFile.ReadValue("StreamerBotPort", 8080)}";
+            integrations_streamer_bot_enable.IsChecked = OptionsManager.VotingFile.ReadValue("EnableVotingYouTube", false);
+            integrations_streamer_bot_port.Text = $"{OptionsManager.VotingFile.ReadValue("YouTubeStreamerBotPort", 8080)}";
         }
 
         private void WriteConfigFile()
@@ -178,8 +178,8 @@ namespace ConfigApp
             OptionsManager.ConfigFile.WriteValueAsInt("MetaShortEffectDur", meta_effects_short_timed_dur.Text);
 
             // Integrations
-            OptionsManager.VotingFile.WriteValue("EnableVotingStreamerBot", integrations_streamer_bot_enable.IsChecked ?? false);
-            OptionsManager.VotingFile.WriteValueAsInt("StreamerBotPort", integrations_streamer_bot_port.Text);
+            OptionsManager.VotingFile.WriteValue("EnableVotingYouTube", integrations_streamer_bot_enable.IsChecked ?? false);
+            OptionsManager.VotingFile.WriteValueAsInt("YouTubeStreamerBotPort", integrations_streamer_bot_port.Text);
         }
 
         private void ParseEffectsFile()
