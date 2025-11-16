@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Timers;
 using Serilog;
 using TwitchChatVotingProxy.ChaosPipe;

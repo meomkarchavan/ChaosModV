@@ -1,4 +1,4 @@
-﻿using Fleck;
+﻿﻿using Fleck;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
@@ -128,10 +128,7 @@ namespace TwitchChatVotingProxy.OverlayServer
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
-            // logger.Information($"Broadcasting overlay request '{request}' with message: {jsonMessage}");
             Broadcast(jsonMessage);
         }
     }
 }
-
-
