@@ -16,7 +16,6 @@ namespace TwitchChatVotingProxy
         private readonly IOverlayServer? m_OverlayServer;
         private readonly IVotingReceiver[] m_VotingReceivers;
         private readonly ChaosModControllerConfig m_Config;
-        private readonly ILogger m_Logger = Log.ForContext<ChaosModController>();
 
         private List<IVoteOption> m_ActiveVoteOptions = new();
         private readonly Timer m_DisplayUpdateTick = new(DISPLAY_UPDATE_TICKRATE);
@@ -238,9 +237,7 @@ namespace TwitchChatVotingProxy
         private void OnVoteReceiverMessage(object? sender, OnMessageArgs e)
         {
             if (!m_VoteRunning || e.ClientId is null || e.Message is null)
-            {
                 return;
-            }
 
             if (m_Config.PermittedUsernames?.Length > 0 && e.Username is not null)
             {
@@ -257,9 +254,7 @@ namespace TwitchChatVotingProxy
                 }
 
                 if (!found)
-                {
                     return;
-                }
             }
 
             for (int i = 0; i < m_ActiveVoteOptions.Count; i++)
@@ -274,20 +269,19 @@ namespace TwitchChatVotingProxy
                         // If they haven't voted, count his vote
                         m_UserVotedFor.Add(e.ClientId, i);
                         voteOption.Votes++;
+
                     }
                     else if (previousVote != i)
                     {
                         // If the player has already voted, and it's not the same as before,
                         // remove the old vote, and add the new one.
                         m_UserVotedFor.Remove(e.ClientId);
-                        var previousVoteOption = m_ActiveVoteOptions[previousVote];
-                        previousVoteOption.Votes--;
+                        m_ActiveVoteOptions[previousVote].Votes--;
 
                         m_UserVotedFor.Add(e.ClientId, i);
                         voteOption.Votes++;
                     }
 
-                    // We found a matching option, so we can stop looking.
                     break;
                 }
             }
